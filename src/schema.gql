@@ -2,19 +2,22 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Item {
-  id: ID!
-  name: String!
-  quantity: Float!
-  quantityUnits: String
-}
-
 type User {
   id: ID!
   fullName: String!
   email: String!
   roles: [String!]!
   isActive: Boolean!
+  lastUpdatedBy: User
+  items: [Item!]!
+}
+
+type Item {
+  id: ID!
+  name: String!
+  quantityUnits: String
+  user: User!
+  userId: String!
 }
 
 type AuthResponse {
@@ -25,14 +28,20 @@ type AuthResponse {
 type Query {
   items: [Item!]!
   item(id: ID!): Item!
-  users: [User!]!
+  users(roles: [ValidRoles!] = []): [User!]!
   user(id: ID!): User!
   revalidate: AuthResponse!
 }
 
+enum ValidRoles {
+  ADMIN
+  USER
+  SUPER_USER
+}
+
 type Mutation {
   createItem(createItemInput: CreateItemInput!): Item!
-  updateItem(updateItemInput: UpdateItemInput!): Item!
+  updateItem(updateItemInput: UpdateItemInput!): String!
   removeItem(id: ID!): Item!
   blockUser(id: ID!): User!
   signup(signupInput: SignupInput!): AuthResponse!
@@ -41,13 +50,11 @@ type Mutation {
 
 input CreateItemInput {
   name: String!
-  quantity: Float!
   quantityUnits: String
 }
 
 input UpdateItemInput {
   name: String
-  quantity: Float
   quantityUnits: String
   id: ID!
 }

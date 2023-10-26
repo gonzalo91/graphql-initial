@@ -43,8 +43,8 @@ export class AuthService {
 
     }
 
-    private async  getJWTToken(userId){
-        return await this.jwtService.signAsync({id: userId});
+    private async  getJWTToken(data:{id: string}){
+        return await this.jwtService.signAsync(data);
     }
 
 
@@ -62,7 +62,7 @@ export class AuthService {
 
     async revalidateToken(user: User): Promise<AuthResponse>{
 
-        const token = await this.getJWTToken(user.id);
+        const token = await this.getJWTToken({id: user.id});
 
         return {
             user, token,

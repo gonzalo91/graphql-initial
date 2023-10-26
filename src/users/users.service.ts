@@ -52,7 +52,7 @@ export class UsersService {
   }
 
   async findOneById(id: string) : Promise<User> {
-
+    console.log({id})
     try {      
       return await this.usersRepository.findOneByOrFail({id});
     } catch (error) {
