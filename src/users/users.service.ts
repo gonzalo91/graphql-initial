@@ -6,6 +6,8 @@ import { SignupInput } from 'src/auth/dtos/inputs/signup.input';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt'
+import { PaginationArgs } from 'src/common/dtos/args/pagination.args';
+import { SearchArgs } from 'src/common/dtos/args/search.args';
 
 @Injectable()
 export class UsersService {
@@ -37,8 +39,20 @@ export class UsersService {
     }    
   }
 
-  async findAll(): Promise<User[]> {
-    return [];
+  async findAll( paginationArgs: PaginationArgs, searchArgs: SearchArgs): Promise<User[]> {
+
+    const { limit, offset } = paginationArgs;
+    const { search } = searchArgs;
+
+    const queryBuilder = this.usersRepository.createQueryBuilder("items")
+                          .take(limit)
+                          .skip(offset)                          
+                        
+    if(search){
+      queryBuilder.andWhere("LOWER(fullName) LIKE :name", {name: `${search.toLowerCase()}`})
+    }
+
+    return await queryBuilder.getMany();    
   }
 
   async findOneByEmail(email: string) : Promise<User> {
@@ -51,8 +65,7 @@ export class UsersService {
 
   }
 
-  async findOneById(id: string) : Promise<User> {
-    console.log({id})
+  async findOneById(id: string) : Promise<User> {    
     try {      
       return await this.usersRepository.findOneByOrFail({id});
     } catch (error) {

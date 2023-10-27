@@ -35,8 +35,7 @@ export class User {
   @Field(() => User, {nullable: true})
   lastUpdatedBy?: User;
 
-  @OneToMany( () => Item, (item) => item.user)
-  @Field(() => [Item])
+  @OneToMany( () => Item, (item) => item.user)  
   items: Item[];
 
 }
