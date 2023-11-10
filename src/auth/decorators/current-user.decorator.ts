@@ -8,7 +8,7 @@ export const CurrentUser = createParamDecorator( (roles: Roles[] = [], context: 
     const user : User = ctx.getContext().req.user;
 
     if(! user){
-        throw new InternalServerErrorException("No user inste the request");
+        throw new InternalServerErrorException("No user is in the request");
     }
 
     if( roles.length === 0) return user;

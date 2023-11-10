@@ -2,6 +2,21 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type ListItem {
+  id: ID!
+  list: List!
+  item: Item!
+  quantity: Int!
+}
+
+type List {
+  id: ID!
+  user: User!
+  userId: ID!
+  name: String!
+  listItems: [ListItem!]!
+}
+
 type User {
   id: ID!
   fullName: String!
@@ -32,6 +47,8 @@ type Query {
   users(roles: [ValidRoles!] = [], offset: Int = 0, limit: Int = 10, search: Int): [User!]!
   user(id: ID!): User!
   revalidate: AuthResponse!
+  lists(offset: Int = 0, limit: Int = 10, search: Int): [List!]!
+  list(id: String!): List!
 }
 
 enum ValidRoles {
@@ -47,6 +64,9 @@ type Mutation {
   blockUser(id: ID!): User!
   signup(signupInput: SignupInput!): AuthResponse!
   login(LoginInput: LoginInput!): AuthResponse!
+  createList(createListInput: CreateListInput!): List!
+  updateList(updateListInput: UpdateListInput!): Boolean!
+  removeList(id: String!): List!
 }
 
 input CreateItemInput {
@@ -69,4 +89,15 @@ input SignupInput {
 input LoginInput {
   email: String!
   password: String!
+}
+
+input CreateListInput {
+  """Name of the list"""
+  name: String!
+}
+
+input UpdateListInput {
+  """Name of the list"""
+  name: String
+  id: ID!
 }
