@@ -2,21 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type ListItem {
-  id: ID!
-  list: List!
-  item: Item!
-  quantity: Int!
-}
-
-type List {
-  id: ID!
-  user: User!
-  userId: ID!
-  name: String!
-  listItems: [ListItem!]!
-}
-
 type User {
   id: ID!
   fullName: String!
@@ -26,6 +11,24 @@ type User {
   lastUpdatedBy: User
   itemCount: Int!
   items(offset: Int = 0, limit: Int = 10, search: Int): [Item!]!
+}
+
+type List {
+  id: ID!
+  user: User!
+  userId: ID!
+  name: String!
+  listItems(offset: Int = 0, limit: Int = 10, search: Int): [ListItem!]!
+  totalItems: Float!
+}
+
+type ListItem {
+  id: ID!
+  listId: String!
+  item: Item!
+  itemId: String!
+  quantity: Float!
+  completed: Boolean!
 }
 
 type Item {
@@ -49,6 +52,7 @@ type Query {
   revalidate: AuthResponse!
   lists(offset: Int = 0, limit: Int = 10, search: Int): [List!]!
   list(id: String!): List!
+  listItem(id: String!): ListItem!
 }
 
 enum ValidRoles {
@@ -67,6 +71,8 @@ type Mutation {
   createList(createListInput: CreateListInput!): List!
   updateList(updateListInput: UpdateListInput!): Boolean!
   removeList(id: String!): List!
+  createListItem(createListItemInput: CreateListItemInput!): ListItem!
+  updateListItem(updateListItemInput: UpdateListItemInput!): ListItem!
 }
 
 input CreateItemInput {
@@ -99,5 +105,20 @@ input CreateListInput {
 input UpdateListInput {
   """Name of the list"""
   name: String
+  id: ID!
+}
+
+input CreateListItemInput {
+  quantity: Float = 0
+  completed: Boolean = false
+  listId: ID!
+  itemId: ID!
+}
+
+input UpdateListItemInput {
+  quantity: Float = 0
+  completed: Boolean = false
+  listId: ID
+  itemId: ID
   id: ID!
 }
